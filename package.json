@@ -10,7 +10,8 @@
 		"release": "npm version minor && npm run build",
 		"release:major": "npm version major && npm run build",
 		"release:minor": "npm version minor && npm run build",
-		"release:patch": "npm version patch && npm run build"
+		"release:patch": "npm version patch && npm run build",
+		"copy-to-local-test": "mkdir -p \"B2Cl-Sync-Vault/.obsidian/plugins/b2cl-sync\" && cp -r b2cl-dist/* \"B2Cl-Sync-Vault/.obsidian/plugins/b2cl-sync/\""
 	},
 	"keywords": [],
 	"author": "",
