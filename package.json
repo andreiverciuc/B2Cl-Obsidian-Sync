@@ -1,12 +1,17 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "b2cl-obsidian-sync",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "This is a plugin for Obsidian that allows syncing your Obsidian vault with Backblaze B2 storage.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"release": "npm version minor && npm run build",
+		"release:major": "npm version major && npm run build",
+		"release:minor": "npm version minor && npm run build",
+		"release:patch": "npm version patch && npm run build",
+		"copy-to-local-test": "mkdir -p \"B2Cl-Sync-Vault/.obsidian/plugins/b2cl-sync\" && cp -r b2cl-dist/* \"B2Cl-Sync-Vault/.obsidian/plugins/b2cl-sync/\""
 	},
 	"keywords": [],
 	"author": "",

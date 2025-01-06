@@ -1,6 +1,7 @@
 import esbuild from "esbuild";
 import process from "process";
 import builtins from "builtin-modules";
+import fs from "fs";
 
 const banner =
 `/*
@@ -11,11 +12,18 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === "production");
 
+if (!fs.existsSync("b2cl-dist")) {
+	fs.mkdirSync("b2cl-dist");
+}
+
+fs.copyFileSync("manifest.json", "b2cl-dist/manifest.json");
+fs.copyFileSync("styles.css", "b2cl-dist/styles.css");
+
 const context = await esbuild.context({
 	banner: {
 		js: banner,
 	},
-	entryPoints: ["main.ts"],
+	entryPoints: ["src/main.ts"],
 	bundle: true,
 	external: [
 		"obsidian",
@@ -37,7 +45,7 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outfile: "b2cl-dist/main.js",
 	minify: prod,
 });
 
