@@ -82,60 +82,103 @@
 	margin-top: 20px;
 }
 
-.bucket-file-list {
-	margin-top: 20px;
+.deleted-files-list {
+	margin: 1em 0;
 	max-height: 400px;
 	overflow-y: auto;
+	padding: 0.5em;
+	background: var(--background-secondary);
+	border-radius: 6px;
 }
 
-.bucket-file-list table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-.bucket-file-list th,
-.bucket-file-list td {
-	padding: 8px;
-	text-align: left;
+.deleted-file-item {
 	border-bottom: 1px solid var(--background-modifier-border);
+	padding: 0.8em 0;
 }
 
-.bucket-file-list th {
-	font-weight: bold;
-	background: var(--background-secondary);
+.deleted-file-item:last-child {
+	border-bottom: none;
 }
 
-.bucket-files-error {
-	color: var(--text-error);
-	padding: 10px;
-	background: var(--background-modifier-error);
-	border-radius: 4px;
+.deleted-file-item .setting-item-control {
+	flex: 0 0 200px;
 }
 
-.clickable-row {
-	cursor: pointer;
-}
-
-.clickable-row:hover {
-	background: var(--background-modifier-hover);
-}
-
-.file-content {
-	margin-top: 20px;
-	max-height: 500px;
+.sync-failures-list {
+	max-height: 300px;
 	overflow-y: auto;
-}
-
-.file-content pre {
-	margin: 0;
+	margin: 15px 0;
 	padding: 10px;
 	background: var(--background-secondary);
 	border-radius: 4px;
 }
 
-.file-content code {
-	display: block;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	font-family: var(--font-monospace);
+.sync-failure-item {
+	padding: 10px;
+	margin-bottom: 8px;
+	background: var(--background-primary);
+	border-radius: 4px;
+}
+
+.sync-failure-path {
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.sync-failure-error {
+	color: var(--text-error);
+	font-size: 0.9em;
+}
+
+.sync-stats-modal {
+	min-width: 300px;
+	max-width: 400px;
+}
+
+.sync-stats-header {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.sync-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+	margin: 20px 0;
+}
+
+.sync-stat-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 12px;
+	background: var(--background-secondary);
+	border-radius: 8px;
+}
+
+.sync-stat-icon {
+	color: var(--text-muted);
+	margin-bottom: 8px;
+}
+
+.sync-stat-icon svg {
+	width: 24px;
+	height: 24px;
+}
+
+.sync-stat-label {
+	font-size: 0.9em;
+	color: var(--text-muted);
+	margin-bottom: 4px;
+}
+
+.sync-stat-value {
+	font-size: 1.1em;
+	font-weight: 600;
+}
+
+.sync-stats-footer {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
 }

@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from 'obsidian';
+import { App, PluginSettingTab, Setting, ButtonComponent, Notice } from 'obsidian';
 import type { B2SyncPlugin } from '../main';
 
 export class B2SyncSettingsTab extends PluginSettingTab {
@@ -46,11 +46,14 @@ export class B2SyncSettingsTab extends PluginSettingTab {
     displayMainSettings(containerEl: HTMLElement): void {
         containerEl.createEl('h2', {text: 'B2 Sync Settings'});
 
+        // B2 Settings
+        containerEl.createEl('h3', {text: 'B2 Settings'});
+
         new Setting(containerEl)
             .setName('Bucket ID')
-            .setDesc('Your Backblaze B2 Bucket ID')
+            .setDesc('Your B2 bucket ID')
             .addText(text => text
-                .setPlaceholder('Enter Bucket ID')
+                .setPlaceholder('Enter your bucket ID')
                 .setValue(this.plugin.settings.bucketId)
                 .onChange(async (value) => {
                     this.plugin.settings.bucketId = value;
@@ -59,9 +62,9 @@ export class B2SyncSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Application Key ID')
-            .setDesc('Your Backblaze B2 Application Key ID')
+            .setDesc('Your B2 application key ID')
             .addText(text => text
-                .setPlaceholder('Enter Application Key ID')
+                .setPlaceholder('Enter your application key ID')
                 .setValue(this.plugin.settings.applicationKeyId)
                 .onChange(async (value) => {
                     this.plugin.settings.applicationKeyId = value;
@@ -70,9 +73,9 @@ export class B2SyncSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Application Key')
-            .setDesc('Your Backblaze B2 Application Key')
+            .setDesc('Your B2 application key')
             .addText(text => text
-                .setPlaceholder('Enter Application Key')
+                .setPlaceholder('Enter your application key')
                 .setValue(this.plugin.settings.applicationKey)
                 .onChange(async (value) => {
                     this.plugin.settings.applicationKey = value;
@@ -81,51 +84,73 @@ export class B2SyncSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Bucket Name')
-            .setDesc('Your Backblaze B2 Bucket Name')
+            .setDesc('Your B2 bucket name')
             .addText(text => text
-                .setPlaceholder('Enter Bucket Name')
+                .setPlaceholder('Enter your bucket name')
                 .setValue(this.plugin.settings.bucketName)
                 .onChange(async (value) => {
                     this.plugin.settings.bucketName = value;
                     await this.plugin.saveSettings();
                 }));
 
+        containerEl.createEl('h3', {text: 'Logging Settings'});
+
         new Setting(containerEl)
-            .setName('Auto Sync')
-            .setDesc('Enable automatic synchronization')
+            .setName('Enable Logging')
+            .setDesc('Enable detailed sync logging')
             .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.autoSync)
+                .setValue(this.plugin.settings.logging.enabled)
                 .onChange(async (value) => {
-                    this.plugin.settings.autoSync = value;
+                    this.plugin.settings.logging.enabled = value;
                     await this.plugin.saveSettings();
-                    this.plugin.setupAutoSync();
                 }));
 
         new Setting(containerEl)
-            .setName('Sync Interval')
-            .setDesc('How often to sync (in minutes)')
-            .addText(text => text
-                .setPlaceholder('60')
-                .setValue(String(this.plugin.settings.syncInterval))
-                .onChange(async (value) => {
-                    const numValue = Number(value);
-                    if (!isNaN(numValue) && numValue > 0) {
-                        this.plugin.settings.syncInterval = numValue;
-                        await this.plugin.saveSettings();
-                        if (this.plugin.settings.autoSync) {
-                            this.plugin.setupAutoSync();
-                        }
-                    }
+            .setName('Log Level')
+            .setDesc('Set the level of detail for logs')
+            .addDropdown(dropdown => dropdown
+                .addOption('debug', 'Debug')
+                .addOption('info', 'Info')
+                .addOption('warn', 'Warning')
+                .addOption('error', 'Error')
+                .setValue(this.plugin.settings.logging.logLevel)
+                .onChange(async (value: 'debug' | 'info' | 'warn' | 'error') => {
+                    this.plugin.settings.logging.logLevel = value;
+                    await this.plugin.saveSettings();
                 }));
 
-        const lastSyncText = this.plugin.settings.lastSync 
-            ? `Last sync: ${new Date(this.plugin.settings.lastSync).toLocaleString()}`
-            : 'Never synced';
-            
-        containerEl.createEl('p', {
-            text: lastSyncText,
-            cls: 'sync-status'
-        });
+        new Setting(containerEl)
+            .setName('Log to File')
+            .setDesc('Save logs to a file in your vault')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.logging.logToFile)
+                .onChange(async (value) => {
+                    this.plugin.settings.logging.logToFile = value;
+                    await this.plugin.saveSettings();
+                }));
+
+        if (this.plugin.settings.logging.logToFile) {
+            new Setting(containerEl)
+                .setName('Log File Path')
+                .setDesc('Path to the log file in your vault')
+                .addText(text => text
+                    .setPlaceholder('.obsidian/plugins/b2cl-sync/sync.log')
+                    .setValue(this.plugin.settings.logging.logFilePath || '')
+                    .onChange(async (value) => {
+                        this.plugin.settings.logging.logFilePath = value;
+                        await this.plugin.saveSettings();
+                    }));
+        }
+
+        new Setting(containerEl)
+            .setName('Show Sync Statistics')
+            .setDesc('Show detailed statistics after each sync')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.showSyncStats)
+                .onChange(async (value) => {
+                    this.plugin.settings.showSyncStats = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
     displayAboutPage(containerEl: HTMLElement): void {

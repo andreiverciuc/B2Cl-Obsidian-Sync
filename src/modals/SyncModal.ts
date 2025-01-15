@@ -33,7 +33,12 @@ export class SyncModal extends Modal {
         const buttonContainer = contentEl.createDiv({ cls: 'sync-modal-buttons' });
         
         const syncButton = buttonContainer.createEl('button', {
-            text: 'Start Sync',
+            text: 'Sync to B2',
+            cls: 'mod-cta'
+        });
+
+        const downloadButton = buttonContainer.createEl('button', {
+            text: 'Download from B2',
             cls: 'mod-cta'
         });
 
@@ -50,7 +55,19 @@ export class SyncModal extends Modal {
                 this.close();
             } catch (error) {
                 syncButton.disabled = false;
-                syncButton.setText('Start Sync');
+                syncButton.setText('Sync to B2');
+            }
+        };
+
+        downloadButton.onclick = async () => {
+            downloadButton.disabled = true;
+            downloadButton.setText('Downloading...');
+            try {
+                await this.plugin.downloadFromB2();
+                this.close();
+            } catch (error) {
+                downloadButton.disabled = false;
+                downloadButton.setText('Download from B2');
             }
         };
 
